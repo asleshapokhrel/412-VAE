@@ -2,7 +2,7 @@
 
 import torch
 import src.Preprocessing.preprocessing import *
-from src.models import *
+from src.models.BetaVae import BetaVAE
 
 # add or remove objects here
 objects = ['mouse', 'airplane']
@@ -15,5 +15,5 @@ data = load_mult_data(objects, data_location)
 num_samples = 2
 train_dataset, train_label = create_dataset(data, objects, num_samples)
 
-beta_vae = BetaVae.BetaVAE()
-train(beta_vae, train_dataset, 1, 128)
+beta_vae = BetaVAE()
+train(beta_vae, train_dataset, 1, 128, "./beta.pth")

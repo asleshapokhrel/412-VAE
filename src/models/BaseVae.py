@@ -16,7 +16,7 @@ class BaseVAE(nn.Module):
     def __init__(self,
                  in_channels: int = 1,
                  latent_dim: int = 4,
-                 hidden_dims: List = [32, 64, 128, 256],
+                 hidden_dims: List = [32, 64, 128, 256, 512],
                  **kwargs) -> None:
                  
         super().__init__()
@@ -37,13 +37,13 @@ class BaseVAE(nn.Module):
             in_channels = h_dim
 
         self.encoder = nn.Sequential(*modules)
-        self.fc_mu = nn.Linear(hidden_dims[-1]*4, latent_dim)
-        self.fc_var = nn.Linear(hidden_dims[-1]*4, latent_dim)
+        self.fc_mu = nn.Linear(hidden_dims[-1], latent_dim)
+        self.fc_var = nn.Linear(hidden_dims[-1], latent_dim)
 
         # Build Decoder
         modules = []
 
-        self.decoder_input = nn.Linear(latent_dim, hidden_dims[-1] * 4)
+        self.decoder_input = nn.Linear(latent_dim, hidden_dims[-1])
 
         hidden_dims.reverse()
 
@@ -60,8 +60,6 @@ class BaseVAE(nn.Module):
                     nn.LeakyReLU(negative_slope=1/5.5))
             )
 
-
-
         self.decoder = nn.Sequential(*modules)
 
         self.final_layer = nn.Sequential(
@@ -73,9 +71,13 @@ class BaseVAE(nn.Module):
                                                output_padding=1),
                             nn.BatchNorm2d(hidden_dims[-1]),
                             nn.LeakyReLU(negative_slope=1/5.5),
-                            nn.Conv2d(hidden_dims[-1], out_channels= 3,
+                            nn.Conv2d(hidden_dims[-1], out_channels= 1,
                                       kernel_size= 3, padding= 1),
-                            nn.Tanh())
+                            nn.Tanh(), 
+                            nn.Flatten(),
+                            nn.Linear((2**(len(hidden_dims)))**2, 28*28)
+                            )       
+            
 
     def encode(self, input: Tensor) -> List[Tensor]:
         """
@@ -100,10 +102,10 @@ class BaseVAE(nn.Module):
         :param z: (Tensor) [B x D]
         :return: (Tensor) [B x C x H x W]
         """
-        decoder_input = self.decoder_input(z).view(-1, 512, 2, 2)
-        decoder_ouput = self.decoder(decoder_input)
+        decoder_input = self.decoder_input(z).view(-1, 512, 1, 1)
+        decoder_output = self.decoder(decoder_input)
 
-        return self.final_layer(decoder_ouput)
+        return self.final_layer(decoder_output).view(-1, 1, 28, 28)
 
     def reparameterize(self, mu: Tensor, logvar: Tensor) -> Tensor:
         """
@@ -148,7 +150,7 @@ class BaseVAE(nn.Module):
         mu, log_var = self.encode(input)
         z = self.reparameterize(mu, log_var)
 
-        return  [self.decode(z), input, mu, log_var]
+        return  (self.decode(z), input, mu, log_var)
 
     @abstractmethod
     def loss_function(self, *inputs: Any, **kwargs) -> Tensor:

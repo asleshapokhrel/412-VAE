@@ -34,6 +34,8 @@ class BetaVAE(BaseVAE):
                       **kwargs) -> dict:
         self.num_iter += 1
 
+        args = args[0]
+
         recons = args[0]
         input = args[1]
         mu = args[2]
@@ -41,7 +43,7 @@ class BetaVAE(BaseVAE):
 
         kld_weight = kwargs['M_N']  # Account for the minibatch samples from the dataset
 
-        recons_loss = F.mse_loss(recons, input)
+        recons_loss = torch.nn.functional.mse_loss(recons, input)
 
         kld_loss = torch.mean(-0.5 * torch.sum(1 + log_var - mu ** 2 - log_var.exp(), dim = 1), dim = 0)
 

@@ -21,4 +21,4 @@ if torch.cuda.is_available():
     vanilla_vae = VanillaVAE().to(torch.device("cuda"))
 else:
     vanilla_vae = VanillaVAE()
-train(vanilla_vae, train_dataset, 10, 128)
+train(vanilla_vae, train_dataset, 10, 128, "./vanilla.pth")
