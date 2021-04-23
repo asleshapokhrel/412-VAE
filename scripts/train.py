@@ -14,7 +14,7 @@ def train(model, dataset, epochs, batch_size, optimizer=torch.optim.Adam(model.p
         for i in range(epochs):
             for batch in batches:
                 optimizer.zero_grad()
-                loss = model.loss_function(model.forward(batch))
+                loss = model.loss_function(model.forward(batch))['loss']
                 loss.backward()
                 optim.step()
-            print("Epoch {i} {model.loss_function(model.forward(val_data))")
+            print(f"Epoch {i} {model.loss_function(model.forward(val_data))['loss']}")
