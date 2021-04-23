@@ -1,0 +1,17 @@
+name: sysgen
+channels:
+    - pytorch
+    - defaults
+    - conda-forge
+dependencies:
+    - python=3.6
+    - pytorch
+    - cuda90
+    - torchvision
+    - numpy
+    - PyYAML==5.1.2
+    - terminado==0.8.1
+    - tensorboard==2.1.0
+    - pytorch-lightning
+    - tensorboardX
+    - torchfile
