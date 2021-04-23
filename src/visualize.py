@@ -1,17 +1,24 @@
 """Methods for visualizing the variational posterior."""
+import numpy as np
+from PIL import Image
 import torch
 
 
-def generate_image(img_tensor)
+def generate_image(img_tensor, save_dir):
     """ Helper function for generating images from tensors.
 
     Parameters:
     img_tensor: torch.Tensor. The tensor we'll be converting into
         an image.
+    save_dir: str. The path to save the image to.
     """
-    pass
+    # Convert the tensor to a numpy array.
+    img_np_array = img_tensor.cpu().detach().numpy()
+    image = Image.fromarray(np.uint8(img_np_array)).convert('RGB')
+    image.save(save_dir)
 
-def visualize_random(latent, likelihood_net)
+
+def visualize_random(latent, likelihood_net):
     """Given a latent vector z, visualize a sample x' ~ q(x|z).
 
     Parameters:
@@ -22,7 +29,7 @@ def visualize_random(latent, likelihood_net)
     """
     pass
 
-def visualize_random_latent(likelihood_net)
+def visualize_random_latent(likelihood_net):
     """ Visualize a random vector from a random likelihood dist.
     Using a latent vector z sampled from the prior p(.), 
     visualize a sample x' ~ q(x|z).
@@ -30,7 +37,7 @@ def visualize_random_latent(likelihood_net)
     """
     pass
 
-def visualize_mean_latent_space(X, posterior_net, dims, labels=None)
+def visualize_mean_latent_space(X, posterior_net, dims, labels=None):
     """ Visualize the means of produced by the posterior net.
 
     Parameters:
