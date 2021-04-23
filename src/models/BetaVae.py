@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import torch
-from models.BaseVae import BaseVAE
+from src.models.BaseVae import BaseVAE
 
 # Most code is from https://github.com/AntixK/PyTorch-VAE
 # Changes: Minor reshuffling of code for readability

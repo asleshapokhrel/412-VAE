@@ -4,7 +4,6 @@ from typing import List, Callable, Union, Any, TypeVar, Tuple
 import torch
 from torch import nn
 from torch.nn import functional as F
-from torch.utils import data.random_split
 from abc import abstractmethod
 
 Tensor = TypeVar('torch.tensor')
@@ -14,7 +13,7 @@ Tensor = TypeVar('torch.tensor')
 
 class BaseVAE(nn.Module):
     
-        def __init__(self,
+    def __init__(self,
                  in_channels: int = 1,
                  latent_dim: int = 4,
                  hidden_dims: List = [32, 64, 128, 256],

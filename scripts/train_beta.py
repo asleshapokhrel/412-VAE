@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import torch
-import src/PreProcessing/preprocessing import *
+import src.Preprocessing.preprocessing import *
 from src.models import *
 
 # add or remove objects here
@@ -15,5 +15,5 @@ data = load_mult_data(objects, data_location)
 num_samples = 2
 train_dataset, train_label = create_dataset(data, objects, num_samples)
 
-beta_vae = BetaVae()
+beta_vae = BetaVae.BetaVAE()
 train(beta_vae, train_dataset, 1, 128)

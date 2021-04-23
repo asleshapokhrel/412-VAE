@@ -1,23 +1,29 @@
 #!/usr/bin/env python3
 
 import torch
+from torch.utils.data import random_split
 
-def train(model, dataset, epochs, batch_size, optimizer=torch.optim.Adam(model.parameters())):    
-        training_data, val_data = data.random_split(dataset, [3*length(dataset)/4, length(dataset)/4])
+def train(model, dataset, epochs, batch_size, optimizer=None):
+    
+    if optimizer is None:
+        optimizer = torch.optim.Adam(model.parameters())    
+    training_data, val_data = random_split(dataset, [3*len(dataset)//4, (len(dataset)+3)//4])
+    training_data = torch.reshape(torch.tensor(training_data, dtype=torch.float), (-1, 1, 28, 28))
+    val_data = torch.reshape(torch.tensor(val_data, dtype=torch.float), (-1, 1, 28, 28))
 
-        if torch.cuda.is_available():
-            training_data = training_data.cuda()
-            val_data = val_data.cuda()
+    if torch.cuda.is_available():
+        training_data = training_data.cuda()
+        val_data = val_data.cuda()
 
-        batches = torch.split(training_data)
+    batches = torch.split(training_data, batch_size)
 
-        for i in range(epochs):
-            model.train()
-            for batch in batches:
-                optimizer.zero_grad()
-                loss = model.loss_function(model.forward(batch))['loss']
-                loss.backward()
-                optim.step()
-            model.eval()
-            with torch.no_grad():
-                print(f"Epoch {i} {model.loss_function(model.forward(val_data))['loss']}")
+    for i in range(epochs):
+        model.train()
+        for batch in batches:
+            optimizer.zero_grad()
+            loss = model.loss_function(model.forward(batch))['loss']
+            loss.backward()
+            optimizer.step()
+        model.eval()
+        with torch.no_grad():
+            print(f"Epoch {i} {model.loss_function(model.forward(val_data))['loss']}")
