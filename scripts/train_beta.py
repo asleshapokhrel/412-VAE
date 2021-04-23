@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 
 import torch
-from src.Data_PreProcessing import *
+import src/PreProcessing/preprocessing import *
 from src.models import *
 
 # add or remove objects here
 objects = ['mouse', 'airplane']
 
+
 # load data
-data = load_mult_data(objects)
+data = load_mult_data(objects, data_location)
 
 # get merged datasets
 num_samples = 2

@@ -55,3 +55,4 @@ class BetaVAE(BaseVAE):
             raise ValueError('Undefined loss type.')
 
         return {'loss': loss, 'Reconstruction_Loss':recons_loss, 'KLD':kld_loss}
+        
