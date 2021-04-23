@@ -2,6 +2,7 @@
 
 import torch
 from src.models.BaseVae import BaseVAE
+from typing import List
 
 # Most code is from https://github.com/AntixK/PyTorch-VAE
 # Changes: Minor reshuffling of code for readability
@@ -13,7 +14,7 @@ class BetaVAE(BaseVAE):
     def __init__(self,
                  in_channels: int = 1,
                  latent_dim: int = 4,
-                 hidden_dims: List = [32, 64, 128, 256],
+                 hidden_dims: List = [32, 64, 128, 256, 512],
                  beta: int = 4,
                  gamma:float = 1000.,
                  max_capacity: int = 25,
