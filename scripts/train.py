@@ -12,9 +12,12 @@ def train(model, dataset, epochs, batch_size, optimizer=torch.optim.Adam(model.p
         batches = torch.split(training_data)
 
         for i in range(epochs):
+            model.train()
             for batch in batches:
                 optimizer.zero_grad()
                 loss = model.loss_function(model.forward(batch))['loss']
                 loss.backward()
                 optim.step()
-            print(f"Epoch {i} {model.loss_function(model.forward(val_data))['loss']}")
+            model.eval()
+            with torch.no_grad():
+                print(f"Epoch {i} {model.loss_function(model.forward(val_data))['loss']}")
