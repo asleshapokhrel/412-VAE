@@ -7,12 +7,14 @@ def train(model, dataset, epochs, batch_size, optimizer=torch.optim.Adam(model.p
 
         if torch.cuda.is_available():
             training_data = training_data.cuda()
+            val_data = val_data.cuda()
 
         batches = torch.split(training_data)
 
         for i in range(epochs):
             for batch in batches:
                 optimizer.zero_grad()
-                loss = loss_function(model.forward(batch))
+                loss = model.loss_function(model.forward(batch))
                 loss.backward()
                 optim.step()
+            print("Epoch {i} {model.loss_function(model.forward(val_data))")
