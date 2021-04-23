@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import torch
-import src/PreProcessing/preprocessing.py
+from src/PreProcessing/preprocessing import *
 from src.models import *
 from train import train
 
