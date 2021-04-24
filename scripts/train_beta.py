@@ -28,4 +28,4 @@ if torch.cuda.is_available():
     beta_vae = BetaVAE().to(torch.device("cuda"))
 else:
     beta_vae = BetaVAE()
-train(beta_vae, train_dataset, 10, 128, "./beta.pth")
+train(beta_vae, train_dataset, 100, 256 "./beta.pth")
