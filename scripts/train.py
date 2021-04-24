@@ -17,6 +17,7 @@ def train(model, dataset, epochs, batch_size, filename, optimizer=None):
 
     batches = torch.split(training_data, batch_size)
 
+    total_losses = []
     for i in range(epochs):
         model.train()
         total_loss = 0
