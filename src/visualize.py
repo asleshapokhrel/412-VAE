@@ -1,10 +1,11 @@
 """Methods for visualizing the variational posterior."""
 import copy
 
+import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
+from sklearn.manifold import TSNE
 import torch
-import matplotlib.pyplot as plt
 
 import src.models
 
@@ -27,7 +28,7 @@ def interpolation_lattice(model, save_prefix, base_latent, interp_dims, num_samp
     """ Create an array of points to interpolate on. 
 
     model: BaseVae object. The model we're visualizing
-    save_dir: str. Path prefix for saving the image.
+    save_prefix: str. Path prefix for saving the image.
     base_latent: torch.Tensor. The initial latent vector that we
         should interpolate on. Note that its dimension should match that of the
         latent space of the model.
@@ -75,6 +76,25 @@ def interpolation_lattice(model, save_prefix, base_latent, interp_dims, num_samp
     pil_array = copy.deepcopy(final_array.cpu().detach())
     pil_array[pil_array < 0] = 0
     generate_image(pil_array, "{}_pil.jpg".format(save_prefix))
+
+
+def create_tsne(image_data, model, labels, save_prefix):
+    """ Map the training data's latent space into two dimensions
+
+    Paramters:
+    image_data: torch.Tensor. The training data.
+    model: BaseVae object. The trained VAE model, based on the object
+        defined in "methods".
+    labels: torch.Tensor. The labels for the training data.
+    save_prefix: str. Path prefix for saving the image.
+
+    """
+    # Encode the data and fit the TSNE model.
+    mu, log_var = model.encode(image_data)
+    embedded_data = TSNE(n_components=2).fit_transform(mu.detach().cpu().numpy())
+
+    plt.scatter(embedded_data[:, 0], embedded_data[:, 1])
+    plt.savefig("{}_tsne_plot.png".format(save_prefix))
 
 
 def visualize_random(latent, likelihood_net):
