@@ -99,6 +99,25 @@ def create_tsne(image_data, model, labels, save_prefix):
     plt.savefig("{}_tsne_plot.png".format(save_prefix))
 
 
+def polar_interpolation(latent_1, latent_2, num_samples = 25):
+    """ Perform polar interpolation between two latent vectors.
+
+    Parameters:
+    latent_1, latent_2: torch.Tensor. Latent vectors for interpolation.
+    num_samples: int. Grainularity of the interpolation.
+    """
+    # Create a lin space to base our interpolation on.
+    linspace = torch.linspace(0, 1, num_samples)
+    linspace = linspace.unsqueeze(1)
+    linspace_1 = torch.sqrt(linspace)
+    linspace_2 = torch.sqrt(1 - linspace)
+    latent_1_lin = latent_1 * linspace_1
+    latent_2_lin = latent_2 * linspace_2
+
+    # Combine these two to complete the interpolation.
+    full_interpolated_samps = latent_1_lin + latent_2_dim
+
+
 def visualize_random(latent, likelihood_net):
     """Given a latent vector z, visualize a sample x' ~ q(x|z).
 
