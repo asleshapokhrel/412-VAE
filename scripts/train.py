@@ -28,12 +28,16 @@ def train(model, dataset, epochs, batch_size, filename, optimizer=None):
             optimizer.step()
             total_loss += loss
         print(total_loss)
-        total_losses.append(total_loss)
+        total_losses.append(total_loss.tolist())
 
         model.eval()
         with torch.no_grad():
             print(f"Epoch {i} {model.loss_function(model.forward(val_data), M_N = 1)['loss']}")
    
-    with open("total_losses_per_epoch"+filename[2:-3]+"txt", "w") as f:
+    # same training losses
+    with open("./Results/losses/total_losses_per_epoch"+filename[2:-3]+"txt", "w") as f:
         f.write(f"{total_losses}")
-    torch.save(model, filename)
+        f.close()
+
+    # save models
+    torch.save(model, "./Results/saved_models/" + filename)
