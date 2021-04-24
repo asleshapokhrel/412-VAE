@@ -25,7 +25,7 @@ train_dataset = np.load(data_sample)
 train_label = np.load(data_names)
 
 if torch.cuda.is_available():
-    beta_vae = BetaVAE().to(torch.device("cuda"))
+    beta_vae = BetaVAE(beta=2.5).to(torch.device("cuda"))
 else:
-    beta_vae = BetaVAE()
-train(beta_vae, train_dataset, 100, 256, "./beta_4_latent4.pth")
+    beta_vae = BetaVAE(beta=2.5)
+train(beta_vae, train_dataset, 100, 256, "./beta_4_latent2andahalf.pth")
