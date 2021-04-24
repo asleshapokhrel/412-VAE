@@ -19,7 +19,7 @@ class BetaVAE(BaseVAE):
                  gamma:float = 1000.,
                  max_capacity: int = 25,
                  Capacity_max_iter: int = 1e5,
-                 loss_type:str = 'B',
+                 loss_type:str = 'H',
                  **kwargs) -> None:
         
         super().__init__(in_channels, latent_dim, hidden_dims, **kwargs)
