@@ -39,7 +39,7 @@ def interpolation_lattice(model, save_prefix, base_latent, interp_dims, num_samp
     first_copy = torch.stack(num_samples*[base_latent])
 
     # Create a vector that interpolates between -1 and 1 in num_samples steps.
-    linspace = torch.linspace(-1, 1, num_samples)
+    linspace = torch.linspace(-3, 3, num_samples).cuda()
 
     # Replace the first interpretation dim with the linspace
     # TODO: EXPERIMENT WITH ADDING THE LINSPACE INSTEAD
@@ -95,11 +95,11 @@ def create_tsne(image_data, model, labels, save_prefix):
     mu, log_var = model.encode(image_data)
     embedded_data = TSNE(n_components=2).fit_transform(mu.detach().cpu().numpy())
 
-    plt.scatter(embedded_data[:, 0], embedded_data[:, 1])
+    plt.scatter(embedded_data[:, 0], embedded_data[:, 1], c=labels)
     plt.savefig("{}_tsne_plot.png".format(save_prefix))
 
 
-def polar_interpolation(latent_1, latent_2, num_samples = 25):
+def polar_interpolation(latent_1, latent_2, model, save_prefix, num_samples = 25):
     """ Perform polar interpolation between two latent vectors.
 
     Parameters:
@@ -107,7 +107,7 @@ def polar_interpolation(latent_1, latent_2, num_samples = 25):
     num_samples: int. Grainularity of the interpolation.
     """
     # Create a lin space to base our interpolation on.
-    linspace = torch.linspace(0, 1, num_samples)
+    linspace = torch.linspace(0, 1, num_samples).cuda()
     linspace = linspace.unsqueeze(1)
     linspace_1 = torch.sqrt(linspace)
     linspace_2 = torch.sqrt(1 - linspace)
@@ -115,7 +115,20 @@ def polar_interpolation(latent_1, latent_2, num_samples = 25):
     latent_2_lin = latent_2 * linspace_2
 
     # Combine these two to complete the interpolation.
-    full_interpolated_samps = latent_1_lin + latent_2_dim
+    full_interpolated_samps = latent_1_lin + latent_2_lin
+
+    # Pass these through the decoder
+    interp_imgs = model.decode(full_interpolated_samps)
+    row_imgs = torch.cat([interp_imgs[col_idx, 0, :, :] for col_idx in range(num_samples)], dim=1)
+
+    img_np_array = row_imgs.cpu().detach().numpy()
+
+    # Multiply by 255 to get better fidelity (Potentially?).
+    # Temporarily also save a numpy array
+    pil_array = copy.deepcopy(row_imgs.cpu().detach())
+    pil_array[pil_array < 0] = 0
+    generate_image(pil_array, "{}_polar_interp.jpg".format(save_prefix))
+
 
 
 def visualize_random(latent, likelihood_net):
