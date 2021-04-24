@@ -42,13 +42,15 @@ def interpolation_lattice(model, save_prefix, base_latent, interp_dims, num_samp
     linspace = torch.linspace(-1, 1, num_samples)
 
     # Replace the first interpretation dim with the linspace
-    first_copy[:, interp_dims[0]] = linspace
+    # TODO: EXPERIMENT WITH ADDING THE LINSPACE INSTEAD
+    first_copy[:, interp_dims[0]] += linspace
 
     # Now make another dimension to interpolate upon
     second_copy = torch.stack(num_samples*[first_copy])
 
     # Now replace the second interpolation dimension with the linspace
-    second_copy.transpose(0,1)[:, :, interp_dims[1]] = linspace
+    # TODO: EXPERIMENT WITH ADDING THE LINSPACE INSTEAD
+    second_copy.transpose(0,1)[:, :, interp_dims[1]] += linspace
 
 
     # Reformat this as a list of num_samples^2 latent vectors.
